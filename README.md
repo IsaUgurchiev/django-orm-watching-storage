@@ -10,7 +10,9 @@
 - Установить poetry
 
 ## Запуск проекта
-Выполнить следующие команды из корня проекта
-- poetry install
-- poetry shell
-- python3 main.py
+Выполнить следующие команды из корня проекта:
+```
+poetry install
+poetry shell
+python3 main.py
+```
