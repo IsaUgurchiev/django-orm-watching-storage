@@ -1,6 +1,7 @@
 from django.db import models
-import django
+from django.utils import timezone
 
+from .utils import get_total_minutes
 
 class Passcard(models.Model):
     is_active = models.BooleanField(default=False)
@@ -27,29 +28,11 @@ class Visit(models.Model):
             leaved="leaved at " + str(self.leaved_at) if self.leaved_at else "not leaved"
         )
 
-    def get_duration(self, to_now=False):
-        if to_now is False:
-            delta = self.leaved_at - self.entered_at
-        else:
-            delta = django.utils.timezone.localtime() - django.utils.timezone.localtime(self.entered_at)
-
-        return delta.total_seconds()
+    def get_duration(self):
+        leaved_at = timezone.localtime(self.leaved_at) or timezone.localtime()
+        entered_at = timezone.localtime(self.entered_at)
+        return leaved_at - entered_at
 
     def is_visit_long(self, minutes=60):
-        delta = self.leaved_at - self.entered_at
-        seconds = delta.total_seconds()
-        if seconds > minutes * 60:
-            return True
-
-        return False
-
-def format_duration(duration):
-    hours = int(duration // 3600)
-    minutes = int((duration % 3600) // 60)
-    seconds = int(duration - (hours * 3600) - (minutes * 60))
-    if hours > 0:
-        return '{:2}ч {:2}мин {:2}сек'.format(int(hours), int(minutes), int(seconds))
-    elif minutes > 0:
-        return '{:2}мин {:2}сек'.format(int(minutes), int(seconds))
-    else:
-        return '{:2}сек'.format(int(seconds))
+        total_minutes = get_total_minutes(self.get_duration())
+        return total_minutes > minutes
