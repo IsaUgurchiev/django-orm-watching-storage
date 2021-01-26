@@ -22,16 +22,19 @@ class Visit(models.Model):
     leaved_at = models.DateTimeField(null=True)
 
     def __str__(self):
+        leaved = "leaved at {leaved_at}".format(
+            leaved_at=timezone.localtime(self.leaved_at)
+            if self.leaved_at else "not leaved"
+        )
         return "{user} entered at {entered} {leaved}".format(
             user=self.passcard.owner_name,
-            entered=self.entered_at,
-            leaved="leaved at " + str(self.leaved_at) if self.leaved_at else "not leaved"
+            entered=timezone.localtime(self.entered_at),
+            leaved=leaved
         )
 
     def get_duration(self):
-        leaved_at = timezone.localtime(self.leaved_at) or timezone.localtime()
-        entered_at = timezone.localtime(self.entered_at)
-        return leaved_at - entered_at
+        leaved_at = self.leaved_at or timezone.localtime()
+        return leaved_at - self.entered_at
 
     def is_visit_long(self, minutes=60):
         total_minutes = get_total_minutes(self.get_duration())

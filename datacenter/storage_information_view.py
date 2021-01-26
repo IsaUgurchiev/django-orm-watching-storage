@@ -6,8 +6,8 @@ from .utils import format_duration
 
 def storage_information_view(request):
     non_closed_visits = []
-    visits = Visit.objects.filter(leaved_at=None)
-    for visit in visits:
+    serialized_visits = Visit.objects.filter(leaved_at=None)
+    for visit in serialized_visits:
         duration = format_duration(visit.get_duration())
         non_closed_visits.append(
             {
