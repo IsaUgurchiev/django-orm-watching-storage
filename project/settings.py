@@ -1,21 +1,28 @@
+from dotenv import load_dotenv
+from environs import Env
+
+load_dotenv()
+env = Env()
+env.read_env()
+
 import os
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'checkpoint.devman.org',
-        'PORT': '5434',
-        'NAME': 'checkpoint',
-        'USER': 'guard',
-        'PASSWORD': 'osim5',
+        'ENGINE': os.getenv("DJANGO_DATABASE_ENGINE"),
+        'HOST': os.getenv("DJANGO_DATABASE_HOST"),
+        'PORT': os.getenv("DJANGO_DATABASE_PORT"),
+        'NAME': os.getenv("DJANGO_DATABASE_NAME"),
+        'USER': os.getenv("DJANGO_DATABASE_USER"),
+        'PASSWORD': os.getenv("DJANGO_DATABASE_PASSWORD"),
     }
 }
 
 INSTALLED_APPS = ['datacenter']
 
-SECRET_KEY = 'REPLACE_ME'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = env("DEBUG", True)
 
 ROOT_URLCONF = "project.urls"
 
@@ -32,10 +39,11 @@ TEMPLATES = [
 ]
 
 
-USE_L10N = True
+USE_L10N = os.getenv("USE_L10N")
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = os.getenv("LANGUAGE_CODE")
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = os.getenv("TIME_ZONE")
 
-USE_TZ = True
+USE_TZ = os.getenv("USE_TZ")
+
